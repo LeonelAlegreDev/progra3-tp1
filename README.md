@@ -1,14 +1,16 @@
-🚀 Aplicación Slim Framework 4 PHP con despliegue automático.
+> **⚠️ Atención** Esta opción dejó de ser gratuita debido a cambios en la plataforma de Heroku. [Mas info](https://help.heroku.com/RSBRUH58/removal-of-heroku-free-product-plans-faq).
+
+Aplicación Slim Framework 4 PHP con despliegue automático en Heroku.
 ==============================
 
-## 📝 Introducción
-El principal objetivo de este repositorio es poder desplegar de forma automática nuestra aplicación PHP Slim Framework 4 en un servidor en la nube. En esta ocación vamos a utilizar la versión gratuita de Railway, que nos permite vincular nuestro repositorio de github con la plataforma, poder desplegar automáticamente nuesto código y quedar disponible en la web.
+## Introducción
+El principal objetivo de este repo es poder desplegar de forma automática nuestra aplicación PHP Slim Framework 4 en Heroku.
 
-## 1⃣ Forkear proyecto
-Como primer paso, debemos hacer un fork de este proyecto desde el boton ubicado en la parte superior derecha de la pagina del repositorio.
+## 1- Forkear proyecto
+Como primer paso, forkeamos este proyecto desde el boton ubicado en la parte superior derecha de la pagina del repositorio.
 
-## 2⃣ Subimos nuestro código (opcional si agregan código)
-Una vez forkeado, clonamos el repo con `git clone <url del repo>` y agregamos nuestro codigo PHP (SLIM Framework).
+## 2- Subimos nuestro código (opcional si agregan código)
+Una vez forkeado, clonamos el repo con `git clone <url del repo>` y agregamos nuestro codigo PHP (SLIM Framework) dentro de la carpeta `/app/`.
 Luego comiteamos y pusheamos los cambios.
 
 ```sh
@@ -17,35 +19,89 @@ git commit -m "first commit"
 git push -u origin main
 ```
 
-## 3⃣ Creamos y configuramos la aplicación en el servidor remoto
+## 3- Crear y configurar la App en Heroku
 
-Para poder desplegar nuestro código en un servidor remoto, necesitamos una plataforma que nos permita gestionar uno. Para ello, nos dirigimos a la página de Railway https://railway.app/, iniciamos sesión con nuestra cuenta de Github.
+Nos dirigimos a la página de Heroku https://heroku.com/, iniciamos sesión si tenemos cuenta o creamos una.
 
-![Railway2](https://i.ibb.co/XSj7ppS/railway-2.png)
+Heroku al iniciar sesión nos muestra su dashboard, aquí haremos clic en **New** y luego en **Create new app**:
 
-Railway al iniciar sesión nos muestra su dashboard, aquí haremos clic en **Deploy from Github repo**
+![Heroku1](https://i.ibb.co/MVTSH69/heroku1.png)
 
-![Railway1](https://i.ibb.co/q9570sL/railway-1.png)
+En esta sección agregamos el nombre de la app, seleccionamos la región United States y luego clic en botón **Create app**
 
-En esta sección buscamos por el nombre de nuestro repo forkeado. Ej.: **slim-php**
+![Heroku2](https://i.ibb.co/TwPJnrW/heroku2.png)
 
-![Railway3](https://i.ibb.co/Yf2Fnx6/railway-3.png)
+Ahora vamos a la sección **Deploy** y hacemos clic en la opción de GitHub, la cual nos mostrará nuestro usuario o tendremos que iniciar sesión con GitHub. Después   buscamos el nombre de nuestro repo y aparecerá abajo:
 
-Una vez hecho esto, va a comenzar a clonar y desplegar nuestro repositorio en el servidor remoto. Este paso puede demorar unos minutos.
+![Heroku3](https://i.ibb.co/vZjZgD6/heroku3.png)
 
-![Railway4](https://i.ibb.co/XxsR518/railway-4.png)
+Seleccionamos el repo y hacemos clic en **Connect**
 
-Una vez que termine vamos a poder ir a la sección **Settings** y elegir la rama de github que queremos deplegar con nuestra aplicación, en nuestro caso `main`. De esta forma, cada vez que se haga una modificación a esta rama, Railway va actualizar automáticamente la aplicación.
+Una vez hecho esto, elegimos la rama de github que queremos deplegar con nuestra aplicación Heroku, en nuestro caso `main`, y hacemos clic en **Enable Automatic Deploys**. De esta forma, cada vez que se haga una modificación a esta rama, Heroku va actualizar automáticamente la aplicación.
 
-![Railway5](https://i.ibb.co/CVk5fLR/railway-5.png)
+![Heroku4](https://i.ibb.co/d0z1NWv/heroku4.png)
 
-En esa misma sección podemos verificar si el depliegue se hizo con exito y la url para acceder en **Domains**. 
+Lo utlimo que deberiamos hacer es clic en el botón **Deploy Branch**. Esto solo se hace una sola vez, luego se hará de forma automática.
 
-https://slim-php-deployment-production.up.railway.app/
+![Heroku5](https://i.ibb.co/sVYwVZx/heroku5.png)
 
-Accedemos a la URL de la app desplegada y si todo funcionó correctamente veremos el siguiente mensaje:
+Podemos verificar desde GitHub si el depliegue se hizo con exito. 
 
-``` {"method":"GET","msg":"Bienvenido a SlimFramework 2023"} ```
+https://github.com/flippiJS/slim-php-mysql-heroku/deployments
+
+![Heroku6](https://i.ibb.co/M87vVmd/Screenshot-at-Mar-29-19-44-49.png)
+
+Desde el botón **View deployment** accedemos a la URL de la app desplegada.
+
+https://slim-php-mysql-heroku.herokuapp.com/
+
+## 4- Crear y configurar la base de datos MySQL (RemoteMysql)
+
+Para esto vamos a crear una cuenta en RemoteMysql -> https://remotemysql.com/login.php que nos permite acceder gratuitamente a un servidor MySQL en la nube. 
+
+En la parte de **Create Account** completamos los datos y creamos la cuenta:
+
+![mysql1](https://i.ibb.co/rbZ7VXw/Screenshot-at-Mar-29-19-41-04.png)
+
+Validamos la cuenta desde el link enviado al correo.
+
+Iniciamos sesión, vamos a **DATABASES** y luego **CREATE NEW DATABASE**
+
+![mysql2](https://i.ibb.co/NSmB9Qh/Screenshot-at-Mar-29-19-49-44.png)
+
+Una vez creada, nos van a figurar los datos de conexion a la base de datos, es **MUY IMPORTANTE** copiar esa informacion porque solo aparecerá una vez.
+
+![mysql3](https://i.ibb.co/YbcqDvK/Screenshot-at-Mar-29-19-50-39.png)
+
+Copiamos estos datos y nos vamos al dashboard del proyecto en Heroku, en la pestaña **Settings**, la opción **Config Vars**.
+
+Agregamos los siguientes datos Clave -> Valor:
+
+```sh
+MYSQL_HOST=remotemysql.com (campo "Server" de los datos que guardamos al crear la base en remotemysql.com)
+MYSQL_PORT=3306 (campo "Port" de los datos que guardamos al crear la base en remotemysql.com)
+MYSQL_USER=elcNx8VTCx (campo "Username" de los datos que guardamos al crear la base en remotemysql.com)
+MYSQL_PASS=1234 (campo "Password" de los datos que guardamos al crear la base en remotemysql.com)
+MYSQL_DB=elcNx8VTCx (campo "Database Name" de los datos que guardamos al crear la base en remotemysql.com)
+```
+
+![mysql3-1](https://i.ibb.co/8XQP54F/Screenshot-at-Mar-29-20-11-25.png)
+
+
+## Acceder a phpMyAdmin, gestión la base de datos remota
+
+Desde las opciones de la base creada, accedemos a **phpMyAdmin**
+
+![mysql4](https://i.ibb.co/jvrdKFm/Screenshot-at-Mar-29-19-51-39.png)
+
+Iniciamos sesion con los datos de la base
+
+![mysql5](https://i.ibb.co/gF2nN9g/Screenshot-at-Mar-29-19-52-39.png)
+
+Desde el panel de este sitio vamos a poder administrar las diferentes bases, crear y borrar tablas y hacer consultas SQL.
+
+![mysql6](https://i.ibb.co/4sY1XNF/Screenshot-at-Mar-29-19-53-10.png)
+
 
 ## Requisitos para correr localmente
 
@@ -58,7 +114,7 @@ php -r "if (hash_file('SHA384', 'composer-setup.php') === 'e115a8dc7871f15d85314
 php composer-setup.php
 ```
 
-## 📂 Correr localmente via XAMPP
+## Correr localmente via XAMPP
 
 - Copiar proyecto dentro de la carpeta htdocs
 
@@ -71,15 +127,15 @@ C:\xampp\htdocs\
 cd C:\xampp\htdocs\<ruta-del-repo-clonado>
 composer update
 ```
-- En el archivo index.php agregar la siguiente linea debajo de `AppFactory::create();`, deberán colocar los subniveles que existan hasta llegar al archivo index.php. Si colocamos el proyecto dentro de subcarpetas por ejemplo, dentro de la carpeta `app` :
+- En el archivo index.php agregar la siguiente linea debajo de `AppFactory::create();`
 
 ```sh
 // Set base path
 $app->setBasePath('/app');
 ```
-- Abrir desde http://localhost/ ó http://localhost:8080/ (depende del puerto configurado en el panel del XAMPP)
+- Abrir desde http://localhost/app ó http://localhost:8080/app (depende del puerto configurado en el panel del XAMPP)
 
-## 📁 Correr localmente via PHP
+## Correr localmente via PHP
 
 - Acceder por linea de comandos a la carpeta del proyecto y luego instalar Slim framework via Compose
 
@@ -91,7 +147,21 @@ php -S localhost:666 -t app
 
 - Abrir desde http://localhost:666/
 
+## Archivo .env localmente
+
+Crear dentro de la carpeta `/app/` el archivo `.env` tomando de referencia `.env.example`
+
+Agregamos los siguientes datos Clave -> Valor:
+
+```sh
+MYSQL_HOST=remotemysql.com (campo "Server" de los datos que guardamos al crear la base en remotemysql.com)
+MYSQL_PORT=3306 (campo "Port" de los datos que guardamos al crear la base en remotemysql.com)
+MYSQL_USER=elcNx8VTCx (campo "Username" de los datos que guardamos al crear la base en remotemysql.com)
+MYSQL_PASS=1234 (campo "Password" de los datos que guardamos al crear la base en remotemysql.com)
+MYSQL_DB=elcNx8VTCx (campo "Database Name" de los datos que guardamos al crear la base en remotemysql.com)
+```
+
 ## Ayuda
 Cualquier duda o consulta por el canal de slack
 
-### 2023 - UTN FRA
+### 2022 - UTN FRA
