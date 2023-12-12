@@ -21,15 +21,21 @@ class ClienteController extends Cliente implements IApiUsable
         // Obtiene los valores de los parámetros usuario y clave.
         $nombre = isset($parametros['nombre']) ? $parametros['nombre'] : null;
         $comensales = isset($parametros['comensales']) ? $parametros['comensales'] : null;
-        
+        $email = isset($parametros['email']) ? $parametros['email'] : null;
+        $contrasena = isset($parametros['contrasena']) ? $parametros['contrasena'] : null;
+
         if( $nombre !== '' && $nombre !== null &&
-            $comensales !== '' && $comensales !== null)
+            $comensales !== '' && $comensales !== null &&
+            $email !== '' && $email !== null &&
+            $contrasena !== '' && $contrasena !== null)
         {            
             // Crea un nuevo objeto Cliente.
             $cliente = new Cliente();
             $cliente->nombre = $nombre;
             $cliente->comensales = $comensales;
-
+            $cliente->email = $email;
+            $cliente->contrasena = $contrasena;
+            
             // Crea el usuario en la base de datos.
             $result = $cliente->PostNew();
 

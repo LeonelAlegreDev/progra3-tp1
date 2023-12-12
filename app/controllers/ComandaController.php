@@ -169,22 +169,22 @@ class ComandaController extends Comanda implements IApiUsable
      */
     public function TraerUno($request, $response, $args)
     {
-        // // Obtiene el nombre de usuario de los argumentos de la ruta.
-        // $id = $args['id'];
+        // Obtiene el nombre de usuario de los argumentos de la ruta.
+        $id = $args['id'];
         
-        // // Obtiene el usuario de la base de datos por su nombre de usuario.
-        // $cliente = Cliente::GetById($id);
+        // Obtiene el usuario de la base de datos por su nombre de usuario.
+        $comanda = Comanda::GetById($id);
 
-        // // Convierte el usuario a formato JSON.
-        // $payload = json_encode($cliente);
+        // Convierte el usuario a formato JSON.
+        $payload = json_encode($comanda);
 
-        // // Establece el contenido de la respuesta en formato JSON.
-        // $response->getBody()->write($payload);
+        // Establece el contenido de la respuesta en formato JSON.
+        $response->getBody()->write($payload);
         
-        // // Establece el encabezado Content-Type de la respuesta.
-        // $response->withHeader('Content-Type', 'application/json');
+        // Establece el encabezado Content-Type de la respuesta.
+        $response->withHeader('Content-Type', 'application/json');
 
-        // return $response;
+        return $response;
     }
 
     /**
@@ -200,14 +200,66 @@ class ComandaController extends Comanda implements IApiUsable
     {
         $params = $request->getQueryParams();
         $estado = isset($params['estado']) ? $params['estado'] : null;
+        $empleado = isset($params['empleado']) ? $params['empleado'] : null;
 
         // Obtiene la lista de todos las Comandas de la base de datos.
         $comandas = Comanda::GetAll($estado);
         $payload = '';
 
         if(is_array($comandas) && is_a($comandas[0], 'Comanda')){
+            $array = array();
+            foreach ($comandas as $comanda) {
+                $detalles = Detalle::GetAllByComanda($comanda->id);
+
+                if(is_array($detalles) && is_a($detalles[0], 'Detalle')){
+                    if($empleado !== null && $empleado !== ''){
+                        $detalle_filtrado = array();
+                        if($empleado == 'bartender' || $empleado == 'cervecero'){
+                            foreach($detalles as $detalle) {
+                                if($detalle->id_bebida !== null)
+                                {
+                                    array_push($detalle_filtrado, $detalle);
+                                }
+                            }
+                        }
+                        else if($empleado == 'cocinero'){
+                            foreach($detalles as $detalle) {
+                                if($detalle->id_comida !== null)
+                                {
+                                    array_push($detalle_filtrado, $detalle);
+                                }
+                            }
+                        }
+                        else if($empleado == 'mozo'){
+                            array_push($array, [
+                                'id' => $comanda->id,
+                                'id_servicio' => $comanda->id_servicio,
+                                'date_start' => $comanda->date_start,
+                                'date_end' => $comanda->date_end,
+                                'detalles' => $detalles
+                            ]);
+                        }
+                        array_push($array, [
+                            'id' => $comanda->id,
+                            'id_servicio' => $comanda->id_servicio,
+                            'date_start' => $comanda->date_start,
+                            'date_end' => $comanda->date_end,
+                            'detalles' => $detalle_filtrado
+                        ]);
+                    }
+                    else{
+                        array_push($array, [
+                            'id' => $comanda->id,
+                            'id_servicio' => $comanda->id_servicio,
+                            'date_start' => $comanda->date_start,
+                            'date_end' => $comanda->date_end,
+                            'detalles' => $detalles
+                        ]);
+                    }
+                }
+            }
             // Convierte la lista de usuarios a formato JSON.
-            $payload = json_encode(array("comandas" => $comandas));
+            $payload = json_encode(array("comandas" => $array));
         }
         else {
             $payload = $comandas;

@@ -22,16 +22,22 @@ class EmpleadoController extends Empleado implements IApiUsable
         $nombre = isset($parametros['nombre']) ? $parametros['nombre'] : null;
         $salario = isset($parametros['salario']) ? $parametros['salario'] : null;
         $rol = isset($parametros['rol']) ? $parametros['rol'] : null;
-        
+        $email = isset($parametros['email']) ? $parametros['email'] : null;
+        $contrasena = isset($parametros['contrasena']) ? $parametros['contrasena'] : null;
+
         if( $nombre !== '' && $nombre !== null &&
             $salario !== '' && $salario !== null && 
-            $rol !== '' && $rol !== null)
+            $rol !== '' && $rol !== null &&
+            $email !== '' && $email !== null &&
+            $contrasena !== '' && $contrasena !== null)
         {            
             // Crea un nuevo objeto Usuario.
             $empleado = new Empleado();
             $empleado->nombre = $nombre;
             $empleado->salario = $salario;
             $empleado->rol = $rol;
+            $empleado->email = $email;
+            $empleado->contrasena = $contrasena;
 
             // Crea el usuario en la base de datos.
             $result = $empleado->crearEmpleado();
@@ -157,6 +163,8 @@ class EmpleadoController extends Empleado implements IApiUsable
         $nombre = isset($parametros['nombre']) ? $parametros['nombre'] : null;
         $salario = isset($parametros['salario']) ? $parametros['salario'] : null;
         $rol = isset($parametros['rol']) ? $parametros['rol'] : null;
+        $email = isset($parametros['email']) ? $parametros['email'] : null;
+        $contrasena = isset($parametros['contrasena']) ? $parametros['contrasena'] : null;
 
         if($id !== '' && $id !== null){
           // Obtiene el Empleado de la base de datos por ID
@@ -167,12 +175,16 @@ class EmpleadoController extends Empleado implements IApiUsable
             // Valida que se haya enviado el nuevo nombre
             if($nombre !== null && $nombre !== '' && 
                $salario !== null && $salario !== '' &&
-               $rol !== null && $rol !== '')
+               $rol !== null && $rol !== '' &&
+               $email !== null && $email !== '' && 
+               $contrasena !== null && $contrasena !== '')
             {
               // Actualiza los datos
               $empleado->nombre = $nombre;
               $empleado->salario = $salario;
               $empleado->rol = $rol;
+              $empleado->email = email;
+              $empleado->contrasena;
 
               // Modifica el Empleado en la base de datos.
               $result = Empleado::UpdateById($empleado);

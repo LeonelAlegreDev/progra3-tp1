@@ -2,26 +2,35 @@
 
 require_once __DIR__ . '/../db/AccesoDatos.php';
 
-class Comanda{
+class Log{
     public $id;
-    public $id_servicio;
-    public $date_start;
-    public $date_end;
+    public $date;
+    public $method;
+    public $uri;
+    public $ip;
+    public $user_agent;
 
     /**
-     *  Crea un nuevo Cliente en la base de datos.
+     *  Crea un nuevo Log en la base de datos.
      *  @return int El ID del nuevo registro.
      */
     public function PostNew()
     {
         // Obtiene una instancia de la clase AccesoDatos.
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
-
-        // Prepara la consulta
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO comandas (id_servicio) VALUES (:id_servicio)");
         
+        // Prepara la consulta
+        $consulta = $objAccesoDatos->prepararConsulta(
+            "INSERT INTO logs (date, method, uri, ip, user_agent) 
+            VALUES (STR_TO_DATE(:date, '%d-%m-%Y %H:%i:%s'), :method, :uri, :ip, :user_agent)"
+        );
+
         // Vincula los valores de los parámetros de la consulta.
-        $consulta->bindValue(':id_servicio', $this->id_servicio, PDO::PARAM_STR);
+        $consulta->bindValue(':date', $this->date, PDO::PARAM_STR);
+        $consulta->bindValue(':method', $this->method, PDO::PARAM_STR);
+        $consulta->bindValue(':uri', $this->uri, PDO::PARAM_STR);
+        $consulta->bindValue(':ip', $this->ip, PDO::PARAM_STR);
+        $consulta->bindValue(':user_agent', $this->user_agent, PDO::PARAM_STR);
 
         try{
             // Ejecuta la consulta.
@@ -31,19 +40,17 @@ class Comanda{
             return $objAccesoDatos->obtenerUltimoId();
         }
         catch (PDOException $e){
-            // return json_encode(array('error' => 'No se pudo cargar Comanda'));
-            return json_encode(array('error' => $e));
-
+            return json_encode(array('error' => 'Fallo la ejecucion de la consulta a la base de datos'));
         }
     }
-
-    public function GetById($id)
+    
+    public static function GetById($id)
     {
         // Obtiene una instancia de la clase AccesoDatos.
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
 
         // Prepara la consulta
-        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM comandas WHERE id = :id");
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM logs WHERE id = :id");
 
         // Vincula el ID en la consulta
         $consulta->bindValue(':id', $id, PDO::PARAM_STR);
@@ -53,13 +60,14 @@ class Comanda{
             $consulta->execute();
     
             // Obtiene el registro de la consulta como objeto Bebida.
-            $result = $consulta->fetchObject('Comanda');
+            $result = $consulta->fetchObject('Log');
 
             // Muestra error en caso de no encontrar registro
             if($result === false){
-                return json_encode(array('error' => "No se encontro Comanda con ID {$id}"));
+                return json_encode(array("error" => "No se encontro Log con ID {$id}"));
             }
 
+            // Devuelve el Empleado encontrado
             return $result;
         }
         catch (PDOException $e){
@@ -67,34 +75,25 @@ class Comanda{
         }
     }
 
-    public function GetAll($estado)
+    public static function GetAll()
     {
-        // Obtiene una instancia de la clase AccesoDatos.
+      // Obtiene una instancia de la clase AccesoDatos.
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
 
-        if($estado !== null && $estado !== ''){
-            switch ($estado) {
-                case 'pendiente':
-                    $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM comandas WHERE date_end IS NULL");
-                    break;
-                
-                case 'terminada':
-                    $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM comandas WHERE date_end IS NOT NULL");
-                    break;
-            }
-        }
-        else{
-            $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM comandas");
-        }
         try{
+            // Preapara la consulta.
+            $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM logs");
+
             $consulta->execute();
     
-            // Obtiene todos los Clientes de la consulta.
-            return $consulta->fetchAll(PDO::FETCH_CLASS, 'Comanda');
+            // Obtiene todos los Log de la consulta.
+            return $consulta->fetchAll(PDO::FETCH_CLASS, 'Log');
         }
         catch (PDOException $e){
             return json_encode(array('error' => 'Fallo la ejecucion de la consulta a la base de datos'));
         }
     }
 }
+
+
 ?>

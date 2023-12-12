@@ -3,6 +3,8 @@ CREATE TABLE `clientes` (
     `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
     `comensales` INT NOT NULL,
     fecha_baja DATE DEFAULT NUll,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    contrasena VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
 

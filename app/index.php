@@ -19,7 +19,9 @@ require_once './controllers/ClienteController.php';
 require_once './controllers/ServicioController.php';
 require_once './controllers/MesaController.php';
 require_once './controllers/ComandaController.php';
-
+require_once './controllers/AuthController.php';
+require_once './controllers/LogController.php';
+require_once './middlewares/AuthEmpleado.php';
 
 // require_once './middlewares/Logger.php';
 
@@ -56,20 +58,20 @@ $app->group('/empleados', function (RouteCollectorProxy $group) {
   $group->get('/{id}', \EmpleadoController::class . ':TraerUno');
 
   // POST
-  $group->post('[/]', \EmpleadoController::class . ':CargarUno');
+  $group->post('[/]', \EmpleadoController::class . ':CargarUno')->add(new AuthEmpleado());
 
   // PUT
-  $group->put('/{id}', \EmpleadoController::class . ':ModificarUno');
+  $group->put('/{id}', \EmpleadoController::class . ':ModificarUno')->add(new AuthEmpleado());
 
   // DELETE by ID
-  $group->delete('/{id}', \EmpleadoController::class . ':BorrarUno');
+  $group->delete('/{id}', \EmpleadoController::class . ':BorrarUno')->add(new AuthEmpleado());
 });
 
 // Productos
 $app->group('/productos', function (RouteCollectorProxy $group)
 {
   // POST Create new Bebida
-  $group->post('/bebidas/', \BebidaController::class . ':CargarUno');
+  $group->post('/bebidas/', \BebidaController::class . ':CargarUno')->add(new AuthEmpleado());
 
   // GET ALL
   $group->get('/bebidas/', \BebidaController::class . ':TraerTodos');
@@ -78,7 +80,7 @@ $app->group('/productos', function (RouteCollectorProxy $group)
   $group->get('/bebidas/{id}', \BebidaController::class . ':TraerUno');
 
   // PUT Update Bebida by ID
-  $group->put('/bebidas/{id}', \BebidaController::class . ':ModificarUno');
+  $group->put('/bebidas/{id}', \BebidaController::class . ':ModificarUno')->add(new AuthEmpleado());
 });
 
 // Clientes
@@ -97,14 +99,14 @@ $app->group('/clientes', function (RouteCollectorProxy $group)
   $group->put('/{id}', \ClienteController::class . ':ModificarUno');
 
   // DELETE by ID
-  $group->delete('/{id}', \ClienteController::class . ':BorrarUno');
+  $group->delete('/{id}', \ClienteController::class . ':BorrarUno')->add(new AuthEmpleado());
 });
 
 // Servicios
 $app->group('/servicios', function (RouteCollectorProxy $group)
 {
   // POST Create new Servicio
-  $group->post('[/]', \ServicioController::class . ':CargarUno');
+  $group->post('[/]', \ServicioController::class . ':CargarUno')->add(new AuthEmpleado());
 });
 
 // Mesas
@@ -116,8 +118,20 @@ $app->group('/mesas', function (RouteCollectorProxy $group)
 // Comandas
 $app->group('/comandas', function (RouteCollectorProxy $group)
 {
-  $group->post('[/]', \ComandaController::class . ':CargarUno');
-  $group->get('[/]', \ComandaController::class . ':TraerTodos');
+  $group->post('[/]', \ComandaController::class . ':CargarUno')->add(new AuthEmpleado());
+  $group->get('[/]', \ComandaController::class . ':TraerTodos')->add(new AuthEmpleado());
+  $group->get('/{id}', \ComandaController::class . ':TraerUno');
+});
+
+$app->group('/auth', function (RouteCollectorProxy $group) {  
+  // POST
+  $group->post('/login/clientes', \AuthController::class . ':IngresarCliente');
+  $group->post('/login/empleados', \AuthController::class . ':IngresarEmpleado');
+});
+
+$app->group('/logs', function (RouteCollectorProxy $group) {  
+  // POST
+  $group->get('/comandas/descargar', \LogController::class . ':DescargarComandas');
 
 });
 

@@ -7,6 +7,8 @@ class Cliente{
     public $nombre;
     public $comensales;
     public $fecha_baja;
+    public $email;
+    public $contrasena;
 
     /**
      *  Crea un nuevo Cliente en la base de datos.
@@ -18,12 +20,13 @@ class Cliente{
         $objAccesoDatos = AccesoDatos::obtenerInstancia();
 
         // Prepara la consulta
-        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO clientes (nombre, comensales) VALUES (:nombre, :comensales)");
+        $consulta = $objAccesoDatos->prepararConsulta("INSERT INTO clientes (nombre, comensales, email, contrasena) VALUES (:nombre, :comensales, :email, :contrasena)");
         
         // Vincula los valores de los parámetros de la consulta.
         $consulta->bindValue(':nombre', $this->nombre, PDO::PARAM_STR);
         $consulta->bindValue(':comensales', $this->comensales, PDO::PARAM_STR);
-
+        $consulta->bindValue(':email', $this->email, PDO::PARAM_STR);
+        $consulta->bindValue(':contrasena', $this->contrasena, PDO::PARAM_STR);
         try{
             // Ejecuta la consulta.
             $consulta->execute();
@@ -98,12 +101,14 @@ class Cliente{
         $objAccesoDato = AccesoDatos::obtenerInstancia();
         
         // Prepara la consulta
-        $consulta = $objAccesoDato->prepararConsulta("UPDATE clientes SET nombre = :nombre, comensales = :comensales WHERE id = :id");
+        $consulta = $objAccesoDato->prepararConsulta("UPDATE clientes SET nombre = :nombre, comensales = :comensales, email = :email, contrasena = :contrasena WHERE id = :id");
         
         // Vincula los valores de los nuevos datos del empleado
         $consulta->bindValue(':nombre', $cliente->nombre, PDO::PARAM_STR);
         $consulta->bindValue(':comensales', $cliente->comensales, PDO::PARAM_STR);
         $consulta->bindValue(':id', $cliente->id, PDO::PARAM_INT);
+        $consulta->bindValue(':email', $cliente->email, PDO::PARAM_STR);
+        $consulta->bindValue(':contrasena', $cliente->contrasena, PDO::PARAM_STR);
         
         // Ejecuta la consulta.
         try{
@@ -144,6 +149,38 @@ class Cliente{
                 return true;
             }
             else return json_encode(array('error' => 'No se encontro el registro'));
+        }
+        catch (PDOException $e){
+            return json_encode(array('error' => 'Fallo la ejecucion de la consulta a la base de datos'));
+        }
+    }
+
+    public static function GetByCredentials($email, $contrasena)
+    {
+        // Obtiene una instancia de la clase AccesoDatos.
+        $objAccesoDatos = AccesoDatos::obtenerInstancia();
+
+        // Prepara la consulta
+        $consulta = $objAccesoDatos->prepararConsulta("SELECT * FROM clientes WHERE email = :email AND contrasena = :contrasena");
+
+        // Vincula el ID en la consulta
+        $consulta->bindValue(':email', $email, PDO::PARAM_STR);
+        $consulta->bindValue(':contrasena', $contrasena, PDO::PARAM_STR);
+
+        try{
+            // Ejecuta la consulta.
+            $consulta->execute();
+    
+            // Obtiene el registro de la consulta como objeto
+            $result = $consulta->fetchObject('Cliente');
+
+            // Muestra error en caso de no encontrar registro
+            if($result === false){
+                return json_encode(array("error" => "No se encontro Cliente con email {$email}"));
+            }
+
+            // Devuelve el Empleado encontrado
+            return $result;
         }
         catch (PDOException $e){
             return json_encode(array('error' => 'Fallo la ejecucion de la consulta a la base de datos'));
